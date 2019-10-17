@@ -11,6 +11,7 @@ func ZipLogFile(filename string){
 
 	defer func () {
 		fmt.Println("zip file created")
+		Logger.wg.Done()
 		WG.Done()
 	}()
 

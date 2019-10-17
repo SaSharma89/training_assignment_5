@@ -9,20 +9,17 @@ import (
 var WG sync.WaitGroup
 
 
-func startLogger( file_size, file_time * int){
+func startLogger( file_time, file_size, file_count * int){
 	fmt.Println("starting logger")
 	defer func () {
 		fmt.Println("Logger is done")
 		WG.Done()
 	}()
 
-	fmt.Println("max file size is :", *file_size)
-	fmt.Println("max file time is :", *file_time)
-
-	InitLogFileDetails( *file_time, *file_size)
+	InitLogFileDetails( *file_time, *file_size, *file_count)
 	count := 0
 
-	for ; count < 1; {
+	for ; count < *file_count; {
 		count = WriteLog(" Testing with random msg...........")
 		//time.Sleep( 1 * time.Second)
 	}
@@ -33,12 +30,13 @@ func main() {
 
 	file_size := flag.Int("log_file_size", 1, "This is max file size in MB")
 	file_time := flag.Int("log_file_time", 1,"This is max file time in min")
+	file_count := flag.Int("log_file_count", 2,"This is max file count")
 
 	flag.Parse()
 
 	WG.Add(1)
 
-	go startLogger(file_time, file_size)
+	go startLogger(file_time, file_size, file_count)
 
 	WG.Wait()
 
