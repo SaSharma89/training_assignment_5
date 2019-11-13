@@ -1,25 +1,25 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"sync"
-	"flag"
 )
 
+// WG for sync
 var WG sync.WaitGroup
 
-
-func startLogger( file_time, file_size, file_count * int){
+func startLogger(fileTime, fileSize, fileCount *int) {
 	fmt.Println("starting logger")
-	defer func () {
+	defer func() {
 		fmt.Println("Logger is done")
 		WG.Done()
 	}()
 
-	InitLogFileDetails( *file_time, *file_size, *file_count)
+	InitLogFileDetails(*fileTime, *fileSize, *fileCount)
 	count := 0
 
-	for ; count < *file_count; {
+	for count < *fileCount {
 		count = WriteLog(" Testing with random msg...........")
 		//time.Sleep( 1 * time.Second)
 	}
@@ -28,15 +28,15 @@ func startLogger( file_time, file_size, file_count * int){
 func main() {
 	fmt.Println("Creating log file with rotation")
 
-	file_size := flag.Int("log_file_size", 1, "This is max file size in MB")
-	file_time := flag.Int("log_file_time", 1,"This is max file time in min")
-	file_count := flag.Int("log_file_count", 2,"This is max file count")
+	fileSize := flag.Int("log_fileSize", 1, "This is max file size in MB")
+	fileTime := flag.Int("log_fileTime", 1, "This is max file time in min")
+	fileCount := flag.Int("log_fileCount", 2, "This is max file count")
 
 	flag.Parse()
 
 	WG.Add(1)
 
-	go startLogger(file_time, file_size, file_count)
+	go startLogger(fileTime, fileSize, fileCount)
 
 	WG.Wait()
 
